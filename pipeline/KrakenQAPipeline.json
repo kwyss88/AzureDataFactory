@@ -168,7 +168,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select ISNULL(MAX(LastModified), GETDATE()) as NewWatermarkvalue from ContentTypes"
+						"sqlReaderQuery": "select ISNULL(MAX(LastModified), GETDATE()) as NewWatermark from ContentTypes"
 					},
 					"dataset": {
 						"referenceName": "KrakenQASql",
@@ -196,11 +196,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[usp_write_watermark]",
+					"storedProcedureName": "[dbo].[UpdateWatermark]",
 					"storedProcedureParameters": {
-						"LastModifiedtime": {
+						"LastModified": {
 							"value": {
-								"value": "@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}",
+								"value": "@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermark}",
 								"type": "Expression"
 							},
 							"type": "DateTime"
