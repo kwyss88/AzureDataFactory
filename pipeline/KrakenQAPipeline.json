@@ -32,7 +32,7 @@
 						"type": "MongoDbV2Source",
 						"batchSize": 100,
 						"filter": {
-							"value": "{'Doc.lastModified': {$gt: '@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}', $lte: '@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}'}}",
+							"value": "{'Doc.lastModified': {$gt: '@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}'}}",
 							"type": "Expression"
 						}
 					},
