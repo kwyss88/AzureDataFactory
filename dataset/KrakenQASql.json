@@ -13,10 +13,6 @@
 				"type": "nvarchar"
 			},
 			{
-				"name": "ContentTypeId",
-				"type": "nvarchar"
-			},
-			{
 				"name": "Name",
 				"type": "nvarchar"
 			},

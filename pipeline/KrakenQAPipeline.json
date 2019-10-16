@@ -32,7 +32,7 @@
 						"type": "MongoDbV2Source",
 						"batchSize": 100,
 						"filter": {
-							"value": "db.getCollection('States_Schemas').find({\"Doc.lastModified\": {$gt: \"@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}\", $lte: \"@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}\"}})",
+							"value": "{'Doc.lastModified': {$gt: '@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}', $lte: '@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}'}}",
 							"type": "Expression"
 						}
 					},
@@ -111,17 +111,7 @@
 									"path": "$['_id']"
 								},
 								"sink": {
-									"name": "ContentTypeId",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['@pipeline()RunId']"
-								},
-								"sink": {
-									"name": "Id",
-									"type": "String"
+									"name": "Id"
 								}
 							}
 						]
@@ -178,7 +168,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select ISNULL(MAX(LastModified), '') as NewWatermarkvalue from ContentTypes"
+						"sqlReaderQuery": "select ISNULL(MAX(LastModified), GETDATE()) as NewWatermarkvalue from ContentTypes"
 					},
 					"dataset": {
 						"referenceName": "KrakenQASql",
