@@ -1,0 +1,15 @@
+{
+	"name": "QA_Elastic_Content",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "QA_Elastic",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "/krakenqa_states_contents/elasticcontententity/_search"
+		},
+		"schema": []
+	}
+}
