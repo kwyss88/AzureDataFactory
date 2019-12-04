@@ -1,0 +1,73 @@
+{
+	"name": "Sql_ContentItemsTemp",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ContentItemId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AppId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AppName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ContentTypeId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ContentTypeName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Status",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IsDeleted",
+				"type": "bit"
+			},
+			{
+				"name": "Created",
+				"type": "datetimeoffset",
+				"scale": 7
+			},
+			{
+				"name": "CreatedBy",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastModifiedBy",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastModified",
+				"type": "datetimeoffset",
+				"scale": 7
+			},
+			{
+				"name": "Version",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Data",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "Hcms",
+			"table": "ContentItemsTemp"
+		}
+	}
+}
