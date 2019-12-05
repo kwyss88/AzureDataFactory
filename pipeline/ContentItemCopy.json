@@ -1,5 +1,5 @@
 {
-	"name": "KrakenQAPipeline",
+	"name": "ContentItemCopy",
 	"properties": {
 		"activities": [
 			{
@@ -111,119 +111,242 @@
 									"mappings": [
 										{
 											"source": {
+												"path": "$['took']"
+											}
+										},
+										{
+											"source": {
+												"path": "$['timed_out']"
+											}
+										},
+										{
+											"source": {
+												"path": "$['_shards']['total']"
+											}
+										},
+										{
+											"source": {
+												"path": "$['_shards']['successful']"
+											}
+										},
+										{
+											"source": {
+												"path": "$['_shards']['skipped']"
+											}
+										},
+										{
+											"source": {
+												"path": "$['_shards']['failed']"
+											}
+										},
+										{
+											"source": {
+												"path": "$['hits']['total']"
+											}
+										},
+										{
+											"source": {
+												"path": "$['hits']['max_score']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_index']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_type']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_id']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_score']"
+											}
+										},
+										{
+											"source": {
 												"path": "['_source']['id']"
-											},
-											"sink": {
-												"name": "ContentItemId",
-												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['documentId']"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['status']"
-											},
-											"sink": {
-												"name": "Status",
-												"type": "Int32"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['lastModified']"
-											},
-											"sink": {
-												"name": "LastModified",
-												"type": "DateTimeOffset"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['version']"
-											},
-											"sink": {
-												"name": "Version",
-												"type": "Int32"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['lastModifiedBy']"
-											},
-											"sink": {
-												"name": "LastModifiedBy",
-												"type": "String"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['created']"
-											},
-											"sink": {
-												"name": "Created",
-												"type": "DateTimeOffset"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['isDeleted']"
-											},
-											"sink": {
-												"name": "IsDeleted",
-												"type": "Boolean"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['ai']"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['appId']['id']"
-											},
-											"sink": {
-												"name": "AppId",
-												"type": "String"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['appId']['name']"
-											},
-											"sink": {
-												"name": "AppName",
-												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['si']"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['schemaId']['id']"
-											},
-											"sink": {
-												"name": "ContentTypeId",
-												"type": "String"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['schemaId']['name']"
-											},
-											"sink": {
-												"name": "ContentTypeName",
-												"type": "String"
 											}
 										},
 										{
 											"source": {
 												"path": "['_source']['createdBy']"
-											},
-											"sink": {
-												"name": "CreatedBy",
-												"type": "String"
 											}
 										},
 										{
 											"source": {
-												"path": "JSON.stringify(['_source']['data'])"
-											},
-											"sink": {
-												"name": "Data",
-												"type": "String"
+												"path": "['_source']['dt']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['data']['stringFieldProperties'][0]['name']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['data']['stringFieldProperties'][0]['fieldData']['en']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['dataDraft']['stringFieldProperties'][0]['name']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['dataDraft']['stringFieldProperties'][0]['fieldData']['en']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['rf']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['rd']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['tg']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['tgd']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['cats']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['ps']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['tg_draft']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['tgd_draft']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['cats_draft']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['sj']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['sj2']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['isPending']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['nd']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['ag']"
+											}
+										},
+										{
+											"source": {
+												"path": "['_source']['ac']"
+											}
+										},
+										{
+											"source": {
+												"path": "['sort']"
 											}
 										}
 									],
