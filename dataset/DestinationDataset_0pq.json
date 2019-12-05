@@ -1,0 +1,95 @@
+{
+	"name": "DestinationDataset_0pq",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ContentItemId",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "AppId",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "AppName",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "ContentTypeId",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "ContentTypeName",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "Status",
+				"type": "int",
+				"precision": 10,
+				"scale": 255
+			},
+			{
+				"name": "IsDeleted",
+				"type": "bit",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "Created",
+				"type": "datetimeoffset",
+				"precision": 255,
+				"scale": 7
+			},
+			{
+				"name": "CreatedBy",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "LastModifiedBy",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			},
+			{
+				"name": "LastModified",
+				"type": "datetimeoffset",
+				"precision": 255,
+				"scale": 7
+			},
+			{
+				"name": "Version",
+				"type": "int",
+				"precision": 10,
+				"scale": 255
+			},
+			{
+				"name": "Data",
+				"type": "nvarchar",
+				"precision": 255,
+				"scale": 255
+			}
+		],
+		"typeProperties": {
+			"schema": "Hcms",
+			"table": "ContentItemsTemp"
+		}
+	}
+}

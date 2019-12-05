@@ -1,0 +1,181 @@
+{
+	"name": "CopyPipeline_0pq",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_0pq",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "/krakenqa_states_contents/elasticcontententity/_search"
+					},
+					{
+						"name": "Destination",
+						"value": "Hcms.ContentItemsTemp"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": "{\n    \"size\": 500,\n    \"from\": 0,\n\"sort\": [{\n  \"lastModified\": {\n    \"order\": \"asc\"\n  }\n}],\n    \"query\": {\n        \"range\": {\n          \"lastModified\": {\n            \"gt\": \"2000-01-01\"\n          }\n        }\n      }\n}",
+						"additionalHeaders": {
+							"Content-Type": "application/json"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['_source']['id']"
+								},
+								"sink": {
+									"name": "ContentItemId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['status']"
+								},
+								"sink": {
+									"name": "Status",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['lastModified']"
+								},
+								"sink": {
+									"name": "LastModified",
+									"type": "DateTimeOffset"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['version']"
+								},
+								"sink": {
+									"name": "Version",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['lastModifiedBy']"
+								},
+								"sink": {
+									"name": "LastModifiedBy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['created']"
+								},
+								"sink": {
+									"name": "Created",
+									"type": "DateTimeOffset"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['isDeleted']"
+								},
+								"sink": {
+									"name": "IsDeleted",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['appId']['id']"
+								},
+								"sink": {
+									"name": "AppId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['appId']['name']"
+								},
+								"sink": {
+									"name": "AppName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['schemaId']['id']"
+								},
+								"sink": {
+									"name": "ContentTypeId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['schemaId']['name']"
+								},
+								"sink": {
+									"name": "ContentTypeName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['createdBy']"
+								},
+								"sink": {
+									"name": "CreatedBy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['_source']['data']"
+								},
+								"sink": {
+									"name": "Data",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['hits']['hits']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_0pq",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_0pq",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
