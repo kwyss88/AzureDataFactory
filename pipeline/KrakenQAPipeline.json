@@ -219,11 +219,10 @@
 										},
 										{
 											"source": {
-												"path": "JSON.stringify(['_source']['data'])"
+												"path": "['_source']['data']"
 											},
 											"sink": {
-												"name": "Data",
-												"type": "String"
+												"name": "Data"
 											}
 										}
 									],
