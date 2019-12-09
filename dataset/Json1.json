@@ -1,0 +1,316 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Elastic_Json",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "/krakenqa_states_contents/elasticcontententity/_search"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"took": {
+					"type": "integer"
+				},
+				"timed_out": {
+					"type": "boolean"
+				},
+				"_shards": {
+					"type": "object",
+					"properties": {
+						"total": {
+							"type": "integer"
+						},
+						"successful": {
+							"type": "integer"
+						},
+						"skipped": {
+							"type": "integer"
+						},
+						"failed": {
+							"type": "integer"
+						}
+					}
+				},
+				"hits": {
+					"type": "object",
+					"properties": {
+						"total": {
+							"type": "integer"
+						},
+						"max_score": {
+							"type": "number"
+						},
+						"hits": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"_index": {
+										"type": "string"
+									},
+									"_type": {
+										"type": "string"
+									},
+									"_id": {
+										"type": "string"
+									},
+									"_score": {
+										"type": "number"
+									},
+									"_source": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"documentId": {
+												"type": "string"
+											},
+											"status": {
+												"type": "integer"
+											},
+											"lastModified": {
+												"type": "string"
+											},
+											"version": {
+												"type": "integer"
+											},
+											"lastModifiedBy": {
+												"type": "string"
+											},
+											"created": {
+												"type": "string"
+											},
+											"isDeleted": {
+												"type": "boolean"
+											},
+											"ai": {
+												"type": "string"
+											},
+											"appId": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												}
+											},
+											"si": {
+												"type": "string"
+											},
+											"schemaId": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												}
+											},
+											"createdBy": {
+												"type": "string"
+											},
+											"dt": {
+												"type": "string"
+											},
+											"data": {
+												"type": "object",
+												"properties": {
+													"stringFieldProperties": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"name": {
+																	"type": "string"
+																},
+																"fieldData": {
+																	"type": "object",
+																	"properties": {
+																		"en": {
+																			"type": "string"
+																		}
+																	}
+																}
+															}
+														}
+													},
+													"referencesFieldProperties": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"name": {
+																	"type": "string"
+																},
+																"fieldData": {
+																	"type": "object",
+																	"properties": {
+																		"en": {
+																			"type": "array"
+																		}
+																	}
+																}
+															}
+														}
+													},
+													"assetsFieldProperties": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"name": {
+																	"type": "string"
+																},
+																"fieldData": {
+																	"type": "object",
+																	"properties": {
+																		"en": {
+																			"type": "array"
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											},
+											"dataDraft": {
+												"type": "object",
+												"properties": {
+													"stringFieldProperties": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"name": {
+																	"type": "string"
+																},
+																"fieldData": {
+																	"type": "object",
+																	"properties": {
+																		"en": {
+																			"type": "string"
+																		}
+																	}
+																}
+															}
+														}
+													},
+													"referencesFieldProperties": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"name": {
+																	"type": "string"
+																},
+																"fieldData": {
+																	"type": "object",
+																	"properties": {
+																		"en": {
+																			"type": "array"
+																		}
+																	}
+																}
+															}
+														}
+													},
+													"assetsFieldProperties": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"name": {
+																	"type": "string"
+																},
+																"fieldData": {
+																	"type": "object",
+																	"properties": {
+																		"en": {
+																			"type": "array"
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											},
+											"rf": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "string"
+														}
+													}
+												}
+											},
+											"rd": {
+												"type": "array"
+											},
+											"tg": {
+												"type": "array"
+											},
+											"tgd": {
+												"type": "array"
+											},
+											"cats": {
+												"type": "array"
+											},
+											"ps": {
+												"type": "null"
+											},
+											"tg_draft": {
+												"type": "array"
+											},
+											"tgd_draft": {
+												"type": "array"
+											},
+											"cats_draft": {
+												"type": "array"
+											},
+											"sj": {
+												"type": "null"
+											},
+											"sj2": {
+												"type": "null"
+											},
+											"isPending": {
+												"type": "boolean"
+											},
+											"nd": {
+												"type": "null"
+											},
+											"ag": {
+												"type": "null"
+											},
+											"ac": {
+												"type": "null"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

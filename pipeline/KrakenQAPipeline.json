@@ -90,16 +90,16 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "RestSource",
-									"httpRequestTimeout": "00:01:40",
-									"requestInterval": "00.00:00:00.010",
-									"requestMethod": "POST",
-									"requestBody": {
-										"value": "{\n    \"size\": @{variables('size')},\n    \"from\": @{variables('from')},\n\"sort\": [{\n  \"lastModified\": {\n    \"order\": \"asc\"\n  }\n}],\n    \"query\": {\n        \"range\": {\n          \"lastModified\": {\n            \"gt\": \"@{activity('LookupOldWatermark').output.firstRow.WatermarkValue}\"\n          }\n        }\n      }\n}",
-										"type": "Expression"
-									},
-									"additionalHeaders": {
-										"Content-Type": "application/json"
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "POST",
+										"additionalHeaders": "Content-Type: application/json",
+										"requestBody": {
+											"value": "{ \"size\": @{variables('size')}, \"from\": @{variables('from')}, \"sort\": [{ \"lastModified\": { \"order\": \"asc\" } }], \"query\": { \"range\": { \"lastModified\": { \"gt\": \"@{activity('LookupOldWatermark').output.firstRow.WatermarkValue}\" } } } }",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
 									}
 								},
 								"sink": {
@@ -222,16 +222,18 @@
 												"path": "['_source']['data']"
 											},
 											"sink": {
-												"name": "Data"
+												"name": "Data",
+												"type": "String"
 											}
 										}
 									],
-									"collectionReference": "$['hits']['hits']"
+									"collectionReference": "$['hits']['hits']",
+									"mapComplexValuesToString": true
 								}
 							},
 							"inputs": [
 								{
-									"referenceName": "QA_Elastic_Content",
+									"referenceName": "Json1",
 									"type": "DatasetReference"
 								}
 							],
