@@ -6,6 +6,9 @@
 			"referenceName": "Hcms_Mongo",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Hcms/Sources"
+		},
 		"annotations": [],
 		"type": "MongoDbV2Collection",
 		"schema": [],
