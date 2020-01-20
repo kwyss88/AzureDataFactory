@@ -1,0 +1,64 @@
+{
+	"name": "DataFactory_Hcms_ContentTypesTemp",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataFactory_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ContentTypeId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AppId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Label",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsPublished",
+				"type": "bit"
+			},
+			{
+				"name": "IsDeleted",
+				"type": "bit"
+			},
+			{
+				"name": "Created",
+				"type": "datetimeoffset",
+				"scale": 7
+			},
+			{
+				"name": "CreatedBy",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastModifiedBy",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastModified",
+				"type": "datetimeoffset",
+				"scale": 7
+			},
+			{
+				"name": "Version",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "Hcms",
+			"table": "ContentTypesTemp"
+		}
+	}
+}
