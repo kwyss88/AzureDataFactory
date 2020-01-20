@@ -5,6 +5,9 @@
 			"referenceName": "DataFactory_Sql",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Hcms/Sinks"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
