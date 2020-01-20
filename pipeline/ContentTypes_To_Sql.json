@@ -1,0 +1,245 @@
+{
+	"name": "ContentTypes_To_Sql",
+	"properties": {
+		"activities": [
+			{
+				"name": "LookupOldWatermark",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select * from WatermarkTable\nwhere TableName = 'Hcms.ContentTypes'",
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "WatermarkDataset",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "ContentTypes_Copy",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "LookupOldWatermark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MongoDbV2Source",
+						"batchSize": 100,
+						"filter": "{'Doc.lastModified': {$gt: '@{activity('LookupOldWatermark').output.firstRow.WatermarkValue}'}}"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE Hcms.ContentTypesTemp",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['_id']"
+								},
+								"sink": {
+									"name": "ContentTypeId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Version']"
+								},
+								"sink": {
+									"name": "Version",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['appId']"
+								},
+								"sink": {
+									"name": "AppId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['isDeleted']"
+								},
+								"sink": {
+									"name": "IsDeleted",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['schemaDef']['name']"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['schemaDef']['isPublished']"
+								},
+								"sink": {
+									"name": "IsPublished",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['schemaDef']['properties']['label']"
+								},
+								"sink": {
+									"name": "Label",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['createdBy']"
+								},
+								"sink": {
+									"name": "CreatedBy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['lastModifiedBy']"
+								},
+								"sink": {
+									"name": "LastModifiedBy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['created']"
+								},
+								"sink": {
+									"name": "Created",
+									"type": "DateTimeOffset"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Doc']['lastModified']"
+								},
+								"sink": {
+									"name": "LastModified",
+									"type": "DateTimeOffset"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Hcms_Mongo_ContentTypes",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DataFactory_Hcms_ContentTypesTemp",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "MergeContentTypes",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ContentTypes_Copy",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Hcms].[MergeContentTypes]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DataFactory_Sql",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "UpdateWatermark",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "MergeContentTypes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[UpdateWatermark]",
+					"storedProcedureParameters": {
+						"LastModified": {
+							"value": "@utcnow()",
+							"type": "DateTime"
+						},
+						"TableName": {
+							"value": "@{activity('LookupOldWatermark').output.firstRow.TableName}",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DataFactory_Sql",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
