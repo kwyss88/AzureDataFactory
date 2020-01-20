@@ -7,9 +7,21 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "KeithDataFactoryTest"
 		},
+		"DataFactory_Sql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DataFactory_Sql'"
+		},
 		"HcmsKeyVault_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://wyssvault.vault.azure.net/"
+		},
+		"Hcms_Mongo_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "store--mongoDb--configuration"
+		},
+		"Hcms_Mongo_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Squidex"
 		}
 	},
 	"variables": {
@@ -28,6 +40,446 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataFactory_Sql')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('DataFactory_Sql_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "HcmsKeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "datafactory-sql-password"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HcmsKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Hcms_Mongo')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Mongo connection for HCMS",
+				"annotations": [],
+				"type": "MongoDbV2",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "HcmsKeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('Hcms_Mongo_properties_typeProperties_connectionString_secretName')]"
+					},
+					"database": "[parameters('Hcms_Mongo_properties_typeProperties_database')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HcmsKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataFactory_Hcms_ContentTypesTemp')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataFactory_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hcms/Sinks"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ContentTypeId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AppId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Label",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsPublished",
+						"type": "bit"
+					},
+					{
+						"name": "IsDeleted",
+						"type": "bit"
+					},
+					{
+						"name": "Created",
+						"type": "datetimeoffset",
+						"scale": 7
+					},
+					{
+						"name": "CreatedBy",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastModifiedBy",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastModified",
+						"type": "datetimeoffset",
+						"scale": 7
+					},
+					{
+						"name": "Version",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "Hcms",
+					"table": "ContentTypesTemp"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataFactory_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Hcms_Mongo_ContentTypes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Data set for HCMS QA Content Types in Mongo",
+				"linkedServiceName": {
+					"referenceName": "Hcms_Mongo",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hcms/Sources"
+				},
+				"annotations": [],
+				"type": "MongoDbV2Collection",
+				"schema": [],
+				"typeProperties": {
+					"collection": "States_Schemas"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Hcms_Mongo')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/WatermarkDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataFactory_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TableName",
+						"type": "varchar"
+					},
+					{
+						"name": "WatermarkValue",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "WatermarkTable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataFactory_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ContentTypes_To_Sql')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupOldWatermark",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select * from WatermarkTable\nwhere TableName = 'Hcms.ContentTypes'",
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "WatermarkDataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "ContentTypes_Copy",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "LookupOldWatermark",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MongoDbV2Source",
+								"batchSize": 100,
+								"filter": {
+									"value": "{'Doc.lastModified': {$gt: '@{activity('LookupOldWatermark').output.firstRow.WatermarkValue}'}}",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE Hcms.ContentTypesTemp",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['_id']"
+										},
+										"sink": {
+											"name": "ContentTypeId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Version']"
+										},
+										"sink": {
+											"name": "Version",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['appId']"
+										},
+										"sink": {
+											"name": "AppId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['isDeleted']"
+										},
+										"sink": {
+											"name": "IsDeleted",
+											"type": "Boolean"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['schemaDef']['name']"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['schemaDef']['isPublished']"
+										},
+										"sink": {
+											"name": "IsPublished",
+											"type": "Boolean"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['schemaDef']['properties']['label']"
+										},
+										"sink": {
+											"name": "Label",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['createdBy']"
+										},
+										"sink": {
+											"name": "CreatedBy",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['lastModifiedBy']"
+										},
+										"sink": {
+											"name": "LastModifiedBy",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['created']"
+										},
+										"sink": {
+											"name": "Created",
+											"type": "DateTimeOffset"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Doc']['lastModified']"
+										},
+										"sink": {
+											"name": "LastModified",
+											"type": "DateTimeOffset"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Hcms_Mongo_ContentTypes",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataFactory_Hcms_ContentTypesTemp",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "MergeContentTypes",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "ContentTypes_Copy",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[Hcms].[MergeContentTypes]"
+						},
+						"linkedServiceName": {
+							"referenceName": "DataFactory_Sql",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "UpdateWatermark",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "MergeContentTypes",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[UpdateWatermark]",
+							"storedProcedureParameters": {
+								"LastModified": {
+									"value": {
+										"value": "@utcnow()",
+										"type": "Expression"
+									},
+									"type": "DateTime"
+								},
+								"TableName": {
+									"value": {
+										"value": "@{activity('LookupOldWatermark').output.firstRow.TableName}",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "DataFactory_Sql",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/WatermarkDataset')]",
+				"[concat(variables('factoryId'), '/datasets/Hcms_Mongo_ContentTypes')]",
+				"[concat(variables('factoryId'), '/datasets/DataFactory_Hcms_ContentTypesTemp')]",
+				"[concat(variables('factoryId'), '/linkedServices/DataFactory_Sql')]"
+			]
 		}
 	]
 }

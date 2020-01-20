@@ -6,22 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "KeithDataFactoryTest"
-		},
-		"DataFactory_Sql_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'DataFactory_Sql'"
-		},
-		"HcmsKeyVault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://wyssvault.vault.azure.net/"
-		},
-		"Hcms_Mongo_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "store--mongoDb--configuration"
-		},
-		"Hcms_Mongo_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "Squidex"
 		}
 	},
 	"variables": {
@@ -54,8 +38,7 @@
 							},
 							"dataset": {
 								"referenceName": "WatermarkDataset",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -201,15 +184,13 @@
 						"inputs": [
 							{
 								"referenceName": "Hcms_Mongo_ContentTypes",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "DataFactory_Hcms_ContentTypesTemp",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -289,8 +270,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/WatermarkDataset')]",
 				"[concat(variables('factoryId'), '/datasets/Hcms_Mongo_ContentTypes')]",
-				"[concat(variables('factoryId'), '/datasets/DataFactory_Hcms_ContentTypesTemp')]",
-				"[concat(variables('factoryId'), '/linkedServices/DataFactory_Sql')]"
+				"[concat(variables('factoryId'), '/datasets/DataFactory_Hcms_ContentTypesTemp')]"
 			]
 		},
 		{
@@ -361,9 +341,7 @@
 					"table": "ContentTypesTemp"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DataFactory_Sql')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Hcms_Mongo_ContentTypes')]",
@@ -417,44 +395,6 @@
 					"table": "WatermarkTable"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DataFactory_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataFactory_Sql')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('DataFactory_Sql_connectionString')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "HcmsKeyVault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "datafactory-sql-password"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/HcmsKeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/HcmsKeyVault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('HcmsKeyVault_properties_typeProperties_baseUrl')]"
-				}
-			},
 			"dependsOn": []
 		},
 		{
@@ -472,14 +412,12 @@
 							"referenceName": "HcmsKeyVault",
 							"type": "LinkedServiceReference"
 						},
-						"secretName": "[parameters('Hcms_Mongo_properties_typeProperties_connectionString_secretName')]"
+						"secretName": "store--mongoDb--configuration"
 					},
-					"database": "[parameters('Hcms_Mongo_properties_typeProperties_database')]"
+					"database": "Squidex"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/HcmsKeyVault')]"
-			]
+			"dependsOn": []
 		}
 	]
 }

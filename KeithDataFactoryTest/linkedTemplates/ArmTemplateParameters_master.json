@@ -5,8 +5,17 @@
 		"factoryName": {
 			"value": "KeithDataFactoryTest"
 		},
+		"DataFactory_Sql_connectionString": {
+			"value": ""
+		},
 		"HcmsKeyVault_properties_typeProperties_baseUrl": {
 			"value": "https://wyssvault.vault.azure.net/"
+		},
+		"Hcms_Mongo_properties_typeProperties_connectionString_secretName": {
+			"value": "store--mongoDb--configuration"
+		},
+		"Hcms_Mongo_properties_typeProperties_database": {
+			"value": "Squidex"
 		},
 		"containerUri": {
 			"value": ""

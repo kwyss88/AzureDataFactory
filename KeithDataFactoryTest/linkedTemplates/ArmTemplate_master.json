@@ -7,9 +7,21 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "KeithDataFactoryTest"
 		},
+		"DataFactory_Sql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DataFactory_Sql'"
+		},
 		"HcmsKeyVault_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://wyssvault.vault.azure.net/"
+		},
+		"Hcms_Mongo_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "store--mongoDb--configuration"
+		},
+		"Hcms_Mongo_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Squidex"
 		},
 		"containerUri": {
 			"type": "string",
@@ -38,8 +50,17 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"DataFactory_Sql_connectionString": {
+						"value": "[parameters('DataFactory_Sql_connectionString')]"
+					},
 					"HcmsKeyVault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('HcmsKeyVault_properties_typeProperties_baseUrl')]"
+					},
+					"Hcms_Mongo_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('Hcms_Mongo_properties_typeProperties_connectionString_secretName')]"
+					},
+					"Hcms_Mongo_properties_typeProperties_database": {
+						"value": "[parameters('Hcms_Mongo_properties_typeProperties_database')]"
 					}
 				}
 			},
