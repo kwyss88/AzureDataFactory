@@ -1,0 +1,19 @@
+{
+	"name": "Hcms_Mongo",
+	"properties": {
+		"description": "Mongo connection for HCMS",
+		"annotations": [],
+		"type": "MongoDbV2",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "HcmsKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "store--mongoDb--configuration"
+			},
+			"database": "Squidex"
+		}
+	}
+}
