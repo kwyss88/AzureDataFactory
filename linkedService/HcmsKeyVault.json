@@ -1,0 +1,10 @@
+{
+	"name": "HcmsKeyVault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://wyssvault.vault.azure.net/"
+		}
+	}
+}
